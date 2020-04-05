@@ -1,0 +1,5 @@
+.idea
+test_wc.go
+go.sum
+*.log
+conf/*
