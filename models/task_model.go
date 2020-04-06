@@ -65,3 +65,13 @@ func DeleteTaskByTaskName(taskName string) bool {
 	return true
 
 }
+
+func ExistTaskByTaskName(taskName string) bool {
+	var task Task
+	db.Select("id").Where("task_name = ?", taskName).First(&task)
+	if task.Id > 0 {
+		return true
+	}
+
+	return false
+}

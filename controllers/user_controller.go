@@ -1,14 +1,12 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"go_cron/models"
 	"go_cron/pkg/e"
 	"go_cron/pkg/util"
 	"net/http"
-	"time"
 )
 
 func UserList(c *gin.Context) {
@@ -71,34 +69,31 @@ func UserInfo(c *gin.Context) {
 }
 
 func UserDelete(c *gin.Context) {
-	username := c.PostForm("username")
 
-	res := models.DeleteUserByUsername(username)
-	c.JSON(http.StatusOK, res)
-}
-
-// 根据token值解析用户信息
-func UserInfoByToken(c *gin.Context) {
-	var code int
-	code = e.SUCCESS
-	token := c.Request.Header.Get("Authorization")
-	claims, err := util.ParseToken(token)
-	fmt.Println(claims, "登录的用户信息")
+	user := &models.User{}
+	err := c.Bind(user)
+	code := e.SUCCESS
 	if err != nil {
-		code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
-	} else if time.Now().Unix() > claims.ExpiresAt {
-		code = e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
+		code = e.INVALID_PARAMS
 	} else {
-		if code == e.SUCCESS {
-			user, _ := models.GetUserByUsername(claims.Username)
-			c.JSON(http.StatusOK, gin.H{
-				"code": code,
-				"msg":  e.GetMsg(code),
-				"data": user,
-			})
-			return
+
+		valid := validation.Validation{}
+		valid.Required(user.Username, "username").Message("名称不能为空")
+
+		if valid.HasErrors() {
+			code = e.INVALID_PARAMS
+		} else {
+			isExist := models.ExistUserByID(user.Username)
+			if !isExist {
+				code = e.ERROR_NOT_EXIST_USER
+			} else {
+				models.DeleteUserByUsername(user.Username)
+			}
 		}
 	}
-
-	c.JSON(http.StatusOK, gin.H{"code": code, "msg": e.GetMsg(code)})
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": "",
+	})
 }

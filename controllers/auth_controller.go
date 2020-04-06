@@ -63,3 +63,29 @@ func GetAuth(c *gin.Context) {
 		"data": data,
 	})
 }
+
+// 根据token值解析用户信息
+func UserInfoByToken(c *gin.Context) {
+	var code int
+	code = e.SUCCESS
+	token := c.Request.Header.Get("Authorization")
+	claims, err := util.ParseToken(token)
+	fmt.Println(claims, "登录的用户信息")
+	if err != nil {
+		code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
+	} else if time.Now().Unix() > claims.ExpiresAt {
+		code = e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
+	} else {
+		if code == e.SUCCESS {
+			user, _ := models.GetUserByUsername(claims.Username)
+			c.JSON(http.StatusOK, gin.H{
+				"code": code,
+				"msg":  e.GetMsg(code),
+				"data": user,
+			})
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"code": code, "msg": e.GetMsg(code)})
+}

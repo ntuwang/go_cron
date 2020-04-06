@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
+	libcron "github.com/lisijie/cron"
 	"go_cron/models"
 	"go_cron/pkg/e"
 	"net/http"
@@ -19,17 +21,46 @@ func TaskList(c *gin.Context) {
 }
 
 func TaskAdd(c *gin.Context) {
-
-	//返回JSON
-	user := &models.Task{}
-	err := c.Bind(user)
+	task := &models.Task{}
+	err := c.Bind(task)
+	code := e.SUCCESS
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": 0, "message": err})
-		return
+		code = e.INVALID_PARAMS
 	} else {
-		res := models.CreateTask(user)
-		c.JSON(http.StatusOK, gin.H{"code": 0, "message": res})
+
+		valid := validation.Validation{}
+		valid.Required(task.TaskName, "taskName").Message("不能为空")
+		valid.Required(task.Command, "command").Message("不能为空")
+		valid.Required(task.CronSpec, "cronSpec").Message("不能为空")
+
+		if _, err := libcron.Parse(task.CronSpec); err != nil {
+			// Cron表达式校验
+			code = e.INVALID_PARAMS
+			c.JSON(http.StatusOK, gin.H{
+				"code": code,
+				"msg":  e.GetMsg(code),
+				"data": "",
+			})
+			return
+		}
+
+		if valid.HasErrors() {
+			code = e.INVALID_PARAMS
+		} else {
+			isExist := models.ExistTaskByTaskName(task.TaskName)
+			if isExist {
+				code = e.ERROR_EXIST_TASK
+			} else {
+				models.CreateTask(task)
+			}
+		}
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": "",
+	})
+
 }
 
 func TaskInfo(c *gin.Context) {

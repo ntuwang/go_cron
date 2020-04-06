@@ -54,3 +54,13 @@ func DeleteTaskGroupByGroupName(groupName string) bool {
 	return true
 
 }
+
+func ExistTaskGroupByGroupName(groupName string) bool {
+	var taskGroup TaskGroup
+	db.Select("id").Where("group_name = ?", groupName).First(&taskGroup)
+	if taskGroup.Id > 0 {
+		return true
+	}
+
+	return false
+}
