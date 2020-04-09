@@ -26,6 +26,10 @@ func InitRouter() *gin.Engine {
 	v1.TaskRouter(task)
 
 	//路由组
+	taskLog := r.Group("/taskLog")
+	v1.TaskLogRouter(taskLog)
+
+	//路由组
 	taskGroup := r.Group("/taskGroup")
 	v1.TaskGroupRouter(taskGroup)
 

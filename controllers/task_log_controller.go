@@ -9,8 +9,13 @@ import (
 
 func TaskLogList(c *gin.Context) {
 	//返回JSON
-	user, _ := models.ListTaskLog()
-	c.JSON(http.StatusOK, user)
+	code := 200
+	taskLog, _ := models.ListTaskLog()
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": taskLog,
+	})
 }
 
 func TaskLogAdd(c *gin.Context) {
