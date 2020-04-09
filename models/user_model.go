@@ -81,3 +81,24 @@ func ExistUserByID(username string) bool {
 
 	return false
 }
+
+func UpdateUser(username string, user *User) bool {
+	db.Model(&User{}).Where("username = ?", username).Updates(&user)
+
+	return true
+}
+
+/*func UpdateUser(username string, data interface{}) bool {
+	data := make(map[string]interface{})
+	data["modified_by"] = modifiedBy
+	if name != "" {
+		data["name"] = name
+	}
+	if state != -1 {
+		data["state"] = state
+	}
+	db.Model(&User{}).Where("username = ?", username).Updates(data)
+
+	return true
+}
+*/

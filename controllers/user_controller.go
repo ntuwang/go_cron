@@ -97,3 +97,37 @@ func UserDelete(c *gin.Context) {
 		"data": "",
 	})
 }
+
+func UserUpdate(c *gin.Context) {
+
+	user := &models.User{}
+	err := c.Bind(user)
+	code := e.SUCCESS
+	if err != nil {
+		code = e.INVALID_PARAMS
+	} else {
+
+		valid := validation.Validation{}
+		valid.Required(user.Username, "username").Message("名称不能为空")
+
+		if valid.HasErrors() {
+			code = e.INVALID_PARAMS
+		} else {
+			isExist := models.ExistUserByID(user.Username)
+			if !isExist {
+				code = e.ERROR_NOT_EXIST_USER
+			} else {
+				if user.Password != "" {
+					user.Password = util.MD5(user.Password)
+				}
+				models.UpdateUser(user.Username, user)
+			}
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": "",
+	})
+
+}

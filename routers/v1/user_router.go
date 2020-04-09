@@ -6,10 +6,11 @@ import (
 )
 
 func UserRouter(user *gin.RouterGroup) {
-	user.GET(`/UserList`, controllers.UserList)              // 判断账号是否存在
-	user.POST(`/UserAdd`, controllers.UserAdd)               // 登陆
-	user.POST(`/ChangePassword`, controllers.ChangePassword) // 登陆
-	user.GET(`/UserInfo`, controllers.UserInfo)              // 登陆
-	user.GET(`/LoginUser`, controllers.UserInfoByToken)      // 登陆
-	user.POST(`/UserDelete`, controllers.UserDelete)         // 登陆
+	user.GET(`/UserList`, controllers.UserList)
+	user.POST(`/UserAdd`, controllers.UserAdd)
+	user.POST(`/ChangePassword`, controllers.ChangePassword)
+	user.GET(`/UserInfo`, controllers.UserInfo)
+	user.GET(`/LoginUser`, controllers.UserInfoByToken)
+	user.POST(`/UserDelete`, controllers.UserDelete)
+	user.POST(`/UserUpdate`, controllers.UserUpdate)
 }

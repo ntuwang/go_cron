@@ -11,7 +11,7 @@ import (
 
 func TaskList(c *gin.Context) {
 	//返回JSON
-	code := 200
+	code := e.SUCCESS
 	task, _ := models.ListTask()
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
@@ -71,8 +71,31 @@ func TaskInfo(c *gin.Context) {
 }
 
 func TaskDelete(c *gin.Context) {
-	taskName := c.PostForm("taskName")
 
-	res := models.DeleteTaskByTaskName(taskName)
-	c.JSON(http.StatusOK, res)
+	task := &models.Task{}
+	err := c.Bind(task)
+	code := e.SUCCESS
+	if err != nil {
+		code = e.INVALID_PARAMS
+	} else {
+
+		valid := validation.Validation{}
+		valid.Required(task.TaskName, "taskName").Message("名称不能为空")
+
+		if valid.HasErrors() {
+			code = e.INVALID_PARAMS
+		} else {
+			isExist := models.ExistTaskByTaskName(task.TaskName)
+			if !isExist {
+				code = e.ERROR_NOT_EXIST_TASK
+			} else {
+				models.DeleteTaskByTaskName(task.TaskName)
+			}
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": "",
+	})
 }
