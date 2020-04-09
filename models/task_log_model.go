@@ -7,7 +7,7 @@ import (
 
 type TaskLog struct {
 	Id          int    `gorm:"size:10;primary_key;AUTO_INCREMENT;not null" json:"id"`
-	TaskId      int    `gorm:"size:10;DEFAULT NULL" json:"userId"`
+	TaskId      int    `gorm:"size:10;DEFAULT NULL" json:"taskId"`
 	Output      string `gorm:"size:200;DEFAULT NULL" json:"output"`
 	Error       string `gorm:"size:200;DEFAULT NULL" json:"error"`
 	Status      int    `gorm:"size:10;DEFAULT NULL" json:"status"`
@@ -19,13 +19,15 @@ func (TaskLog) TableName() string {
 	return "t_task_log"
 }
 
-func CreateTaskLog(taskLog *TaskLog) bool {
+func CreateTaskLog(taskLog *TaskLog) (int, error) {
 
-	err := db.Create(&taskLog).Error //创建对象
-	if err != nil {
-		return false
+	row := new(TaskLog)
+	d := db.Create(taskLog).Scan(&row)
+	if d.Error != nil {
+		return 0, d.Error
 	}
-	return true
+	return row.Id, nil
+
 }
 
 func ListTaskLog() ([]TaskLog, error) {

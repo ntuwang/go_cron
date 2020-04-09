@@ -11,7 +11,7 @@ import (
 
 type Job struct {
 	id         int                                               // 任务ID
-	logId      int64                                             // 日志记录ID
+	logId      int                                               // 日志记录ID
 	name       string                                            // 任务名称
 	task       *models.Task                                      // 任务对象
 	runFunc    func(time.Duration) (string, string, error, bool) // 执行函数
@@ -60,7 +60,7 @@ func (j *Job) GetId() int {
 	return j.id
 }
 
-func (j *Job) GetLogId() int64 {
+func (j *Job) GetLogId() int {
 	return j.logId
 }
 
@@ -115,7 +115,7 @@ func (j *Job) Run() {
 		log.Status = models.TASK_ERROR
 		log.Error = err.Error() + ":" + cmdErr
 	}
-	//j.logId, _ = models.TaskLogAdd(log)
+	j.logId, _ = models.CreateTaskLog(log)
 
 	// 更新上次执行时间
 	j.task.PrevTime = t.Unix()

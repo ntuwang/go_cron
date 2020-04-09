@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"go_cron/models"
+	"go_cron/pkg/e"
 	"net/http"
 )
 
@@ -14,16 +15,19 @@ func TaskLogList(c *gin.Context) {
 
 func TaskLogAdd(c *gin.Context) {
 
-	//返回JSON
-	user := &models.TaskLog{}
-	err := c.Bind(user)
+	taskLog := &models.TaskLog{}
+	err := c.Bind(taskLog)
+	code := e.SUCCESS
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": 0, "message": err})
-		return
+		code = e.INVALID_PARAMS
 	} else {
-		res := models.CreateTaskLog(user)
-		c.JSON(http.StatusOK, gin.H{"code": 0, "message": res})
+		models.CreateTaskLog(taskLog)
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": "",
+	})
 }
 
 func TaskLogInfo(c *gin.Context) {
