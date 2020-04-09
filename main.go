@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go_cron/pkg/jobs"
+	"go_cron/pkg/logging"
 	"net/http"
 	//l4g "github.com/alecthomas/log4go"
 	"go_cron/pkg/setting"
@@ -10,6 +11,7 @@ import (
 )
 
 func main() {
+	logging.Info("run...")
 	jobs.InitJobs()
 	router := routers.InitRouter()
 
