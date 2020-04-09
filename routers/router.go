@@ -33,6 +33,8 @@ func InitRouter() *gin.Engine {
 	taskGroup := r.Group("/taskGroup")
 	v1.TaskGroupRouter(taskGroup)
 
+	r.POST("/home/dashboard", jwt.JWT(), controllers.DashBoard) // 需要认证
+
 	return r
 
 }

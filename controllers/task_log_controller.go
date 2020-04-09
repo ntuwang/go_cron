@@ -35,13 +35,6 @@ func TaskLogAdd(c *gin.Context) {
 	})
 }
 
-func TaskLogInfo(c *gin.Context) {
-	taskId := c.Query("taskId")
-
-	user, _ := models.GetTaskLogByTaskId(taskId)
-	c.JSON(http.StatusOK, user)
-}
-
 func TaskLogDelete(c *gin.Context) {
 	taskId := c.PostForm("taskId")
 

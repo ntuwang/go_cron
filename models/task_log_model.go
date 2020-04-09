@@ -39,11 +39,11 @@ func ListTaskLog() ([]TaskLog, error) {
 	return taskLog, err
 }
 
-func GetTaskLogByTaskId(logName string) (TaskLog, error) {
+func GetTaskLogByTaskId(taskId int) ([]TaskLog, error) {
 
 	//defer db.Close()
-	var taskLog TaskLog
-	err := db.Debug().Where("task_id = ?", logName).First(&taskLog).Error
+	var taskLog []TaskLog
+	err := db.Where("task_id = ?", taskId).Find(&taskLog).Error
 	fmt.Println(err, taskLog)
 	return taskLog, err
 }
@@ -57,4 +57,22 @@ func DeleteTaskLogByTaskId(logName string) bool {
 	}
 	return true
 
+}
+
+func ListSuccessTask() ([]TaskLog, error) {
+
+	var t []TaskLog
+	//err := db.Limit(3).Find(&task).Error //限制查找前line行
+	err := db.Where("status = 0").Find(&t).Error
+
+	return t, err
+}
+
+func ListFailedTask() ([]TaskLog, error) {
+
+	var t []TaskLog
+	//err := db.Limit(3).Find(&task).Error //限制查找前line行
+	err := db.Where("status <> 0").Find(&t).Error
+
+	return t, err
 }
