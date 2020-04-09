@@ -5,6 +5,12 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
+const (
+	TASK_SUCCESS = 0  // 任务执行成功
+	TASK_ERROR   = -1 // 任务执行出错
+	TASK_TIMEOUT = -2 // 任务执行超时
+)
+
 type Task struct {
 	Id           int       `gorm:"size:10;primary_key;AUTO_INCREMENT;not null" json:"id"`
 	UserId       int       `gorm:"size:20;DEFAULT NULL" json:"userId"`
@@ -46,6 +52,16 @@ func ListTask() ([]Task, error) {
 	err := db.Preload("TaskGroup").Find(&tasks).Error
 
 	return tasks, err
+}
+
+func ListTaskTotal() ([]Task, int) {
+
+	var tasks []Task
+	//err := db.Limit(3).Find(&task).Error //限制查找前line行
+	db.Preload("TaskGroup").Find(&tasks)
+	total := len(tasks)
+
+	return tasks, total
 }
 
 func GetTaskByTaskName(taskName string) (Task, error) {
