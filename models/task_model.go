@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"time"
 )
 
 const (
@@ -28,8 +29,8 @@ type Task struct {
 	NotifyEmail  string    `gorm:"size:200;DEFAULT NULL" json:"notifyEmail"`
 	Timeout      int       `gorm:"size:20;DEFAULT NULL" json:"timeout"`
 	ExecuteTimes int       `gorm:"size:20;DEFAULT NULL" json:"executeTimes"`
-	PrevTime     int64     `gorm:"size:64;DEFAULT NULL" json:"prevTime"`
-	CreateTime   int       `gorm:"size:64;DEFAULT NULL" json:"createTime"`
+	PrevTime     string    `gorm:"size:50;DEFAULT NULL" json:"prevTime"`
+	CreateTime   string    `gorm:"size:50;DEFAULT NULL" json:"createTime"`
 }
 
 func (Task) TableName() string {
@@ -37,7 +38,8 @@ func (Task) TableName() string {
 }
 
 func CreateTask(task *Task) bool {
-
+	t := time.Now().Format("2006-01-02 15:04:05") //2019-07-31 13:55:21.3410012 +0800 CST m=+0.006015601
+	task.CreateTime = t
 	err := db.Create(&task).Error //创建对象
 	if err != nil {
 		return false
@@ -92,4 +94,17 @@ func ExistTaskByTaskName(taskName string) bool {
 	}
 
 	return false
+}
+
+func UpdateTask(taskName string, values map[string]interface{}) bool {
+	var task Task
+	db.Select("id").Where("task_name = ?", taskName).First(&task)
+	if task.Id == 0 {
+		return false
+	}
+	err := db.Model(&task).Updates(values).Error
+	if err != nil {
+		return false
+	}
+	return true
 }

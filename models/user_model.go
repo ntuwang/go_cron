@@ -11,7 +11,7 @@ type User struct {
 	Password  string `gorm:"size:20;DEFAULT NULL" json:"password"`
 	Salt      string `gorm:"size:200;DEFAULT NULL" json:"salt"`
 	Email     string `gorm:"size:50;DEFAULT NULL" json:"email"`
-	LastLogin int    `gorm:"size:30;DEFAULT NULL" json:"lastLogin"`
+	LastLogin string `gorm:"size:50;DEFAULT NULL" json:"lastLogin"`
 	LastIp    string `gorm:"size:32;DEFAULT NULL" json:"lastIp"`
 	Status    int    `gorm:"size:2;DEFAULT NULL" json:"status"`
 }

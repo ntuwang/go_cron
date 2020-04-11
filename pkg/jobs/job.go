@@ -106,7 +106,7 @@ func (j *Job) Run() {
 	log.Output = cmdOut
 	log.Error = cmdErr
 	log.ProcessTime = int(ut)
-	log.CreateTime = t.Unix()
+	log.CreateTime = t.Format("2006-01-02 15:04:05")
 
 	if isTimeout {
 		log.Status = models.TASK_TIMEOUT
@@ -118,8 +118,10 @@ func (j *Job) Run() {
 	j.logId, _ = models.CreateTaskLog(log)
 
 	// 更新上次执行时间
-	j.task.PrevTime = t.Unix()
+	j.task.PrevTime = t.Format("2006-01-02 15:04:05")
 	j.task.ExecuteTimes++
-	//j.task.Update("PrevTime", "ExecuteTimes")
+	//j.task.UpdateTask("PrevTime", "ExecuteTimes")
+	values := map[string]interface{}{"PrevTime": j.task.PrevTime, "ExecuteTimes": j.task.ExecuteTimes}
+	models.UpdateTask(j.task.TaskName, values)
 
 }

@@ -12,7 +12,7 @@ type TaskLog struct {
 	Error       string `gorm:"size:200;DEFAULT NULL" json:"error"`
 	Status      int    `gorm:"size:10;DEFAULT NULL" json:"status"`
 	ProcessTime int    `gorm:"size:64;DEFAULT NULL" json:"processTime"`
-	CreateTime  int64  `gorm:"size:64;DEFAULT NULL" json:"createTime"`
+	CreateTime  string `gorm:"size:50;DEFAULT NULL" json:"createTime"`
 }
 
 func (TaskLog) TableName() string {

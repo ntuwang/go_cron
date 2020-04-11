@@ -10,7 +10,7 @@ type TaskGroup struct {
 	UserId      int    `gorm:"size:20;DEFAULT NULL" json:"userId"`
 	GroupName   string `gorm:"size:20;DEFAULT NULL" json:"groupName"`
 	Description string `gorm:"size:50;DEFAULT NULL" json:"description"`
-	CreateTime  int64  `gorm:"size:64;DEFAULT NULL" json:"createTime"`
+	CreateTime  string `gorm:"size:50;DEFAULT NULL" json:"createTime"`
 }
 
 func (TaskGroup) TableName() string {
