@@ -34,7 +34,7 @@ func ListTaskLog() ([]TaskLog, error) {
 
 	var taskLog []TaskLog
 	//err := db.Limit(3).Find(&taskLog).Error //限制查找前line行
-	err := db.Find(&taskLog).Error
+	err := db.Order("id desc").Find(&taskLog).Error
 
 	return taskLog, err
 }
