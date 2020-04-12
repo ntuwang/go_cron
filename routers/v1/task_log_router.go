@@ -6,7 +6,7 @@ import (
 )
 
 func TaskLogRouter(task *gin.RouterGroup) {
-	task.GET(`/TaskLogList`, controllers.TaskLogList)      // 判断账号是否存在
+	task.POST(`/TaskLogList`, controllers.TaskLogList)     // 判断账号是否存在
 	task.POST(`/TaskLogAdd`, controllers.TaskLogAdd)       // 登陆
 	task.POST(`/TaskLogDelete`, controllers.TaskLogDelete) // 登陆
 }

@@ -30,11 +30,10 @@ func CreateTaskLog(taskLog *TaskLog) (int, error) {
 
 }
 
-func ListTaskLog() ([]TaskLog, error) {
-
+func ListTaskLog(params map[string]interface{}) ([]TaskLog, error) {
+	fmt.Println(33333, params)
 	var taskLog []TaskLog
-	//err := db.Limit(3).Find(&taskLog).Error //限制查找前line行
-	err := db.Order("id desc").Find(&taskLog).Error
+	err := db.Where(params).Order("id desc").Find(&taskLog).Error
 
 	return taskLog, err
 }
