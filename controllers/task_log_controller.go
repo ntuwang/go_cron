@@ -9,11 +9,7 @@ import (
 
 func TaskLogList(c *gin.Context) {
 	code := e.SUCCESS
-	query := struct {
-		TaskName string `json:"taskName"`
-		Status   int    `json:"status"`
-		Datetime string `json:"datetime"`
-	}{}
+	query := models.Query{"", 3, ""}
 
 	err := c.BindJSON(&query)
 	if err != nil {
@@ -26,11 +22,7 @@ func TaskLogList(c *gin.Context) {
 		return
 	}
 
-	params := make(map[string]interface{})
-	params["task_id"] = query.TaskName
-	params["status"] = query.Status
-
-	taskLogs, _ := models.ListTaskLog(params)
+	taskLogs, _ := models.ListTaskLog(query)
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  e.GetMsg(code),

@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"strings"
 )
 
 type TaskLog struct {
@@ -13,6 +14,12 @@ type TaskLog struct {
 	Status      int    `gorm:"size:10;DEFAULT NULL" json:"status"`
 	ProcessTime int    `gorm:"size:64;DEFAULT NULL" json:"processTime"`
 	CreateTime  string `gorm:"size:50;DEFAULT NULL" json:"createTime"`
+}
+
+type Query struct {
+	TaskName string `json:"taskName"`
+	Status   int    `json:"status"`
+	Datetime string `json:"datetime"`
 }
 
 func (TaskLog) TableName() string {
@@ -30,10 +37,23 @@ func CreateTaskLog(taskLog *TaskLog) (int, error) {
 
 }
 
-func ListTaskLog(params map[string]interface{}) ([]TaskLog, error) {
-	fmt.Println(33333, params)
+func ListTaskLog(query Query) ([]TaskLog, error) {
+
+	var Db = db
+	if query.TaskName != "" {
+		Db = Db.Where("task_id = ?", query.TaskName)
+	}
+	if query.Status != 3 {
+		Db = Db.Where("status = ?", query.Status)
+	}
+	if query.Datetime != "" {
+		datetime := strings.Split(query.Datetime, "~")
+		startTime := strings.Trim(datetime[0], " ")
+		endTime := strings.Trim(datetime[1], " ")
+		Db = Db.Where("create_time > ?", startTime).Where("create_time < ?", endTime)
+	}
 	var taskLog []TaskLog
-	err := db.Where(params).Order("id desc").Find(&taskLog).Error
+	err := Db.Order("id desc").Find(&taskLog).Error
 
 	return taskLog, err
 }
