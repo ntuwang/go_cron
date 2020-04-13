@@ -9,6 +9,7 @@ import (
 type TaskLog struct {
 	Id          int    `gorm:"size:10;primary_key;AUTO_INCREMENT;not null" json:"id"`
 	TaskId      int    `gorm:"size:10;DEFAULT NULL" json:"taskId"`
+	Task        Task   `gorm:"foreignkey:TaskId" json:"task"`
 	Output      string `gorm:"size:200;DEFAULT NULL" json:"output"`
 	Error       string `gorm:"size:200;DEFAULT NULL" json:"error"`
 	Status      int    `gorm:"size:10;DEFAULT NULL" json:"status"`
@@ -53,7 +54,7 @@ func ListTaskLog(query Query) ([]TaskLog, error) {
 		Db = Db.Where("create_time > ?", startTime).Where("create_time < ?", endTime)
 	}
 	var taskLog []TaskLog
-	err := Db.Order("id desc").Find(&taskLog).Error
+	err := Db.Preload("Task").Order("id desc").Find(&taskLog).Error
 
 	return taskLog, err
 }
