@@ -2,4 +2,4 @@
 test_wc.go
 go.sum
 *.log
-conf/*
+conf/*.ini

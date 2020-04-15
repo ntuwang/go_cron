@@ -19,14 +19,36 @@
 
 ## 界面截图
 
-![webcron](./media/image/dashboard.png)
+![go_cron](./media/image/dashboard.png)
 
-![webcron](./media/image/任务.png)
+![go_cron](./media/image/任务.png)
 
-![webcron](./media/image/用户管理.png)
+![go_cron](./media/image/用户管理.png)
 
-![webcron](./media/image/newtask.png)
+![go_cron](./media/image/newtask.png)
 
 ## 安装说明
 
-未完待续
+系统需要安装Go和MySQL。
+
+获取源码
+
+	$ git clone https://github.com/ntuwang/go_cron
+	
+打开配置文件 conf/app.ini，修改相关配置。
+	
+
+创建数据库go_cron，再导入install.sql
+
+	$ mysql -u username -p -D go_cron < install.sql
+
+运行
+	
+	$go run main.go 
+
+访问(前端)： 
+
+http://localhost:8080
+
+帐号：admin
+密码：123456

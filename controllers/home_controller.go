@@ -18,9 +18,11 @@ func DashBoard(c *gin.Context) {
 		d := make(map[string]interface{})
 		d["taskName"] = t.TaskName
 		taskLog, _ := models.GetTaskLogByTaskId(t.Id)
-		m := taskLog[len(taskLog)-1]
-		d["taskLog"] = m
-		tLogs = append(tLogs, d)
+		if len(taskLog) > 0 {
+			m := taskLog[len(taskLog)-1]
+			d["taskLog"] = m
+			tLogs = append(tLogs, d)
+		}
 	}
 	successTask, _ := models.ListSuccessTask()
 	failedTask, _ := models.ListFailedTask()

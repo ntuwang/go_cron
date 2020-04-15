@@ -48,14 +48,14 @@ CREATE TABLE `t_user` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL DEFAULT '' COMMENT '用户名',
   `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
-  `password` char(32) NOT NULL DEFAULT '' COMMENT '密码',
+  `password` char(100) NOT NULL DEFAULT '' COMMENT '密码',
   `salt` char(10) NOT NULL DEFAULT '' COMMENT '密码盐',
   `last_login` varchar(50) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `last_ip` char(15) NOT NULL DEFAULT '' COMMENT '最后登录IP',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态，0正常 -1禁用',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_user_name` (`user_name`)
+  UNIQUE KEY `idx_user_name` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `t_user` (`id`, `user_name`, `email`, `password`, `salt`, `last_login`, `last_ip`, `status`)
+INSERT INTO `t_user` (`id`, `username`, `email`, `password`, `salt`, `last_login`, `last_ip`, `status`)
 VALUES (1,'admin','admin@example.com','d41d8cd98f00b204e9800998ecf8427e','',0,'',0);

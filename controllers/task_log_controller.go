@@ -23,7 +23,6 @@ func TaskLogList(c *gin.Context) {
 	}
 
 	taskLogs, _ := models.ListTaskLog(query)
-	values := make(map[string]interface{})
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
 		"msg":  e.GetMsg(code),
